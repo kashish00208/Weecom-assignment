@@ -19,10 +19,8 @@ const handleSubmit = async () => {
     console.error("Error while fetching data of products:", error);
   }
 };
-
   return (
     <div>
-      <Button onClick={handleSubmit}>get data</Button>
     </div>
   )
 }
