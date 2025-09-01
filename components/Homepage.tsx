@@ -20,7 +20,7 @@ const Homepage = () => {
       setProducts(data.products);
       setLoading(false);
     } catch (error) {
-      console.error("Error while fetching data of products:", error);
+      console.error("Error while fetching data:", error);
       setLoading(false);
     }
   };
@@ -30,16 +30,18 @@ const Homepage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-white relative">
+    <div className="min-h-screen w-full bg-white relative overflow-hidden">
       <div
         className="absolute inset-0 z-0"
         style={{
           background: "white",
           backgroundImage: `
-     linear-gradient(to right, rgba(71,85,105,0.15) 1px, transparent 1px),
-     linear-gradient(to bottom, rgba(71,85,105,0.15) 1px, transparent 1px),
-     radial-gradient(circle at 50% 60%, rgba(236,72,153,0.15) 0%, rgba(168,85,247,0.05) 40%, transparent 70%)
-   `,
+            linear-gradient(to right, rgba(71,85,105,0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(71,85,105,0.1) 1px, transparent 1px),
+            radial-gradient(circle at 20% 30%, rgba(236,72,153,0.25), transparent 70%),
+            radial-gradient(circle at 80% 70%, rgba(168,85,247,0.2), transparent 70%)
+          `,
+          backgroundSize: "40px 40px, 40px 40px, auto auto, auto auto",
         }}
       />
       <section className="relative w-screen h-[90vh]">
@@ -51,24 +53,25 @@ const Homepage = () => {
           sizes="100vw"
           className="object-cover object-center"
         />
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-pink-900/40 to-transparent" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 tracking-wide">
+          <h1 className="bg-gradient-to-r from-pink-300 to-purple-300 text-transparent bg-clip-text text-5xl md:text-7xl font-extrabold drop-shadow-lg mb-6">
             Beauty That Inspires ✨
           </h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl">
+          <p className="text-lg md:text-2xl mb-10 max-w-2xl opacity-90">
             Discover our exclusive collection of makeup & skincare products
           </p>
-          <button className="px-8 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition">
+          <button className="px-10 py-4 rounded-full font-semibold uppercase tracking-wide bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300 animate-pulse">
             Shop Now
           </button>
         </div>
       </section>
 
-      <main className="py-12 bg-gradient-to-br from-pink-50 via-white to-purple-50">
-        <h1 className="text-5xl font-extrabold tracking-wide mb-12 text-center uppercase text-pink-700">
+      <main className="py-16 bg-gradient-to-br from-pink-50 via-white to-purple-50 relative z-10">
+        <h1 className="text-center text-5xl md:text-6xl font-extrabold uppercase mb-16 bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text">
           Our Collection
         </h1>
+
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {[...Array(6)].map((_, i) => (
@@ -79,37 +82,40 @@ const Homepage = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {products.map((product) => (
               <div
                 key={product.id}
-                className="group flex flex-col items-center text-center bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300 relative overflow-hidden"
+                className="group relative bg-white/70 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden border border-transparent hover:border-pink-300 transition-all duration-300"
               >
                 <div className="relative w-full h-80 overflow-hidden">
                   <img
                     src={product.thumbnail}
                     alt={product.title}
-                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
                   />
                 </div>
-                <div className="mt-5 space-y-2 px-4">
-                  <div className="flex justify-between gap-8">
+                <div className="p-5 space-y-3">
+                  <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold text-gray-900 truncate">
                       {product.title}
                     </h2>
-                    <p className="text-lg font-bold text-pink-700">
+                    <p className="text-lg font-bold text-pink-600 drop-shadow">
                       ₹{product.price}
                     </p>
                   </div>
                 </div>
-                <button className="mt-4 mb-7 px-8 py-2 border-2 border-pink-600 text-pink-700 rounded-full font-bold uppercase hover:bg-pink-700 hover:text-white transition duration-200">
-                  Add to Cart
-                </button>
+                <div className="absolute bottom-0 left-0 w-full translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                  <button className="w-full py-3 font-bold uppercase bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-b-2xl hover:opacity-90 transition">
+                    Add to Cart
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
-        <button className="fixed bottom-6 right-6 bg-pink-700 text-white px-6 py-3 rounded-full shadow-xl z-50 hover:bg-pink-800 uppercase font-bold transition">
+
+        <button className="fixed bottom-6 right-6 px-6 py-3 rounded-full font-bold uppercase bg-white/80 backdrop-blur-md shadow-xl border border-pink-400 text-pink-600 hover:bg-pink-600 hover:text-white transition-all duration-300 animate-bounce">
           View Cart
         </button>
       </main>
@@ -118,19 +124,3 @@ const Homepage = () => {
 };
 
 export default Homepage;
-<div className="min-h-screen w-full bg-white relative">
-  {/* Magenta Orb Grid Background */}
-  <div
-    className="absolute inset-0 z-0"
-    style={{
-      background: "white",
-      backgroundImage: `
-     linear-gradient(to right, rgba(71,85,105,0.15) 1px, transparent 1px),
-     linear-gradient(to bottom, rgba(71,85,105,0.15) 1px, transparent 1px),
-     radial-gradient(circle at 50% 60%, rgba(236,72,153,0.15) 0%, rgba(168,85,247,0.05) 40%, transparent 70%)
-   `,
-      backgroundSize: "40px 40px, 40px 40px, 100% 100%",
-    }}
-  />
-  {/* Your Content/Components */}
-</div>;
