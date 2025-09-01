@@ -12,6 +12,8 @@ interface Product {
 const Homepage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState<Product[]>([]);
+  const [showCart, setShowCart] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -25,25 +27,20 @@ const Homepage = () => {
     }
   };
 
+  const handleCart = (product: Product) => {
+    setCart((prev) => [...prev, product]); 
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
 
   return (
     <div className="min-h-screen w-full bg-white relative overflow-hidden">
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background: "white",
-          backgroundImage: `
-            linear-gradient(to right, rgba(71,85,105,0.1) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(71,85,105,0.1) 1px, transparent 1px),
-            radial-gradient(circle at 20% 30%, rgba(236,72,153,0.25), transparent 70%),
-            radial-gradient(circle at 80% 70%, rgba(168,85,247,0.2), transparent 70%)
-          `,
-          backgroundSize: "40px 40px, 40px 40px, auto auto, auto auto",
-        }}
-      />
       <section className="relative w-screen h-[90vh]">
         <Image
           src="/main3.webp"
@@ -67,7 +64,7 @@ const Homepage = () => {
         </div>
       </section>
 
-      <main className="py-16 bg-gradient-to-br from-pink-50 via-white to-purple-50 relative z-10">
+     <main className="py-16 bg-gradient-to-br from-pink-50 via-white to-purple-50 relative z-10">
         <h1 className="text-center text-5xl md:text-6xl font-extrabold uppercase mb-16 bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text">
           Our Collection
         </h1>
@@ -106,7 +103,10 @@ const Homepage = () => {
                   </div>
                 </div>
                 <div className="absolute bottom-0 left-0 w-full translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                  <button className="w-full py-3 font-bold uppercase bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-b-2xl hover:opacity-90 transition">
+                  <button
+                    onClick={() => handleCart(product)}
+                    className="w-full py-3 font-bold uppercase bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-b-2xl hover:opacity-90 transition"
+                  >
                     Add to Cart
                   </button>
                 </div>
@@ -115,10 +115,61 @@ const Homepage = () => {
           </div>
         )}
 
-        <button className="fixed bottom-6 right-6 px-6 py-3 rounded-full font-bold uppercase bg-white/80 backdrop-blur-md shadow-xl border border-pink-400 text-pink-600 hover:bg-pink-600 hover:text-white transition-all duration-300 animate-bounce">
-          View Cart
+        <button
+          onClick={() => setShowCart(true)}
+          className="fixed bottom-6 right-6 px-6 py-3 rounded-full font-bold uppercase bg-white/80 backdrop-blur-md shadow-xl border border-pink-400 text-pink-600 hover:bg-pink-600 hover:text-white transition-all duration-300"
+        >
+          View Cart ({cart.length})
         </button>
       </main>
+
+      {showCart && (
+        <div className="fixed inset-0 bg-black/40 flex justify-end z-50">
+          <div className="bg-white w-96 h-full shadow-xl p-6 overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-6">Your Cart 🛒</h2>
+
+            {cart.length === 0 ? (
+              <p className="text-gray-500">Your cart is empty.</p>
+            ) : (
+              <ul className="space-y-4">
+                {cart.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex items-center justify-between border-b pb-2"
+                  >
+                    <div>
+                      <p className="font-semibold">{item.title}</p>
+                      <p className="text-pink-600">₹{item.price}</p>
+                    </div>
+                    <button
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-sm text-red-500 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <div className="mt-6">
+              <p className="text-lg font-bold">
+                Total: ₹
+                {cart.reduce((acc, item) => acc + item.price, 0)}
+              </p>
+              <button className="w-full mt-4 py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold rounded-lg hover:opacity-90">
+                Checkout
+              </button>
+              <button
+                onClick={() => setShowCart(false)}
+                className="w-full mt-2 py-2 border border-gray-300 rounded-lg hover:bg-gray-100"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
